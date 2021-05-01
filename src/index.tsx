@@ -1,17 +1,40 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import * as React from "react";
+import { render } from "react-dom";
+import { Provider, useSelector, useDispatch } from "react-redux";
+import { PingState } from './redux/modules/root';
+// import {RootState} from 'typesafe-actions';
 
-ReactDOM.render(
-  <React.StrictMode>
+import { ping } from "./redux/modules/ping";
+
+import configureStore from "./redux/configureStore";
+
+import "./styles.css";
+
+function App() {
+
+   console.log(useSelector(state => state))
+  // const isPinging =   useSelector(state => state.ping.isPinging);
+  const isPinging = useSelector((state: PingState) =>  state.ping.isPinging);
+
+  const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    console.info(`isPinging`, isPinging);
+  });
+
+  return (
+    <div style={{margin : '20rem'}}>
+      <h2>isPinging? {isPinging.toString()}</h2>
+      <button onClick={() => dispatch(ping())}>PING</button>
+    </div>
+  );
+}
+
+const store = configureStore();
+const rootElement = document.getElementById("root");
+render(
+  <Provider store={store}>
     <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  </Provider>,
+  rootElement
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
